@@ -23,18 +23,25 @@ export default function BlogIndexPage() {
         </a>
       </div>
       <h2 className="mt-12 text-2xl font-semibold">Blog</h2>
-      <ul className="mt-8 space-y-6">
+      <ul className="mt-8 divide-y divide-white/10">
         {items.map((post) => (
-          <li key={post.slug}>
-            <Link href={`/blog/${post.slug}`} className="text-xl font-semibold hover:underline">
-              {post.title}
+          <li key={post.slug} className="py-6">
+            <Link
+              href={`/blog/${post.slug}`}
+              className="group block -mx-4 rounded-lg px-4 py-3 transition hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+            >
+              <div className="flex items-baseline justify-between gap-4">
+                <h3 className="text-xl font-semibold text-white group-hover:underline">
+                  {post.title}
+                </h3>
+                <span className="text-sm opacity-70 whitespace-nowrap">
+                  {new Date(post.date).toLocaleDateString()}
+                </span>
+              </div>
+              {post.description && (
+                <p className="mt-2 opacity-80">{post.description}</p>
+              )}
             </Link>
-            <div className="text-sm opacity-70">
-              {new Date(post.date).toLocaleDateString()}
-            </div>
-            {post.description && (
-              <p className="mt-2 opacity-80">{post.description}</p>
-            )}
           </li>
         ))}
         {items.length === 0 && (
