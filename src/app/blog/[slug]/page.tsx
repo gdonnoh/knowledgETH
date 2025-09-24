@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
   const post = getPostByRouteSlug(slug);
   if (!post) return {};
-  const url = `https://example.com/blog/${post.slug}`;
+  const url = `https://knowledgeth.vercel.app/blog/${post.slug}`;
   const images = post.firstImageUrl
     ? [{ url: post.firstImageUrl }]
     : undefined;
