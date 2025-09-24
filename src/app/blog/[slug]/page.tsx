@@ -28,7 +28,7 @@ export default async function PostPage({ params }: Params) {
   const { slug } = await params;
   const post = getPostByRouteSlug(slug);
   if (!post) return notFound();
-  const url = `https://example.com/blog/${post.slug}`;
+  const url = `https://knowledgeth.vercel.app/blog/${post.slug}`;
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
       <Link href="/blog" className="opacity-70 hover:underline">← Back to blog</Link>
