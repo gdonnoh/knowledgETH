@@ -16,6 +16,8 @@ export type Post = PostFrontmatter & {
   // underlying filename without extension (used for locating file on disk)
   fileSlug: string;
   content: string;
+  // first image URL found in content (used for social previews)
+  firstImageUrl?: string;
 };
 
 const postsDirectory = path.join(process.cwd(), "src", "content", "posts");
@@ -55,6 +57,18 @@ function readPostFromBaseFilename(fileSlug: string): Post | null {
     : fm.title
     ? toKebabCase(fm.title)
     : toKebabCase(fileSlug);
+
+  // Extract first image URL from MD/MDX content: handle markdown images and <img> tags
+  let firstImageUrl: string | undefined;
+  const markdownImgMatch = content.match(/!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/);
+  if (markdownImgMatch && markdownImgMatch[1]) {
+    firstImageUrl = markdownImgMatch[1];
+  } else {
+    const htmlImgMatch = content.match(/<img\s+[^>]*src=["']([^"']+)["'][^>]*>/i);
+    if (htmlImgMatch && htmlImgMatch[1]) {
+      firstImageUrl = htmlImgMatch[1];
+    }
+  }
   return {
     slug: urlSlug,
     fileSlug,
@@ -63,6 +77,7 @@ function readPostFromBaseFilename(fileSlug: string): Post | null {
     description: fm.description,
     date: fm.date,
     tags: fm.tags ?? [],
+    firstImageUrl,
   };
 }
 
