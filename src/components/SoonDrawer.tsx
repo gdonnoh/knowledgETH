@@ -48,8 +48,8 @@ export function SoonDrawer() {
           <div className="px-4 py-3">
             <p className="text-sm opacity-80">Upcoming notes:</p>
             <ul className="mt-2 list-disc pl-5 space-y-1 text-sm">
-              <li>Account Abstraction basics</li>
-              <li>Rollups and data availability</li>
+              <li>Proxy contract</li>
+              <li>ERC-4337 (account abstraction)</li>
               <li>ZK proving systems overview</li>
             </ul>
           </div>

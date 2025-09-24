@@ -7,16 +7,27 @@ export type PostFrontmatter = {
   description?: string;
   date: string; // ISO string
   tags?: string[];
+  slug?: string; // optional custom URL slug
 };
 
 export type Post = PostFrontmatter & {
+  // slug used in URL routing (derived from frontmatter slug or kebab-case title/filename)
   slug: string;
+  // underlying filename without extension (used for locating file on disk)
+  fileSlug: string;
   content: string;
 };
 
 const postsDirectory = path.join(process.cwd(), "src", "content", "posts");
 
-export function getAllPostSlugs(): string[] {
+function toKebabCase(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function listPostBaseFilenames(): string[] {
   if (!fs.existsSync(postsDirectory)) return [];
   return fs
     .readdirSync(postsDirectory)
@@ -24,19 +35,29 @@ export function getAllPostSlugs(): string[] {
     .map((file) => file.replace(/\.(mdx|md)$/i, ""));
 }
 
-export function getPostBySlug(slug: string): Post | null {
-  const filePathMdx = path.join(postsDirectory, `${slug}.mdx`);
-  const filePathMd = path.join(postsDirectory, `${slug}.md`);
-  const filePath = fs.existsSync(filePathMdx) ? filePathMdx : fs.existsSync(filePathMd) ? filePathMd : null;
+function readPostFromBaseFilename(fileSlug: string): Post | null {
+  const filePathMdx = path.join(postsDirectory, `${fileSlug}.mdx`);
+  const filePathMd = path.join(postsDirectory, `${fileSlug}.md`);
+  const filePath = fs.existsSync(filePathMdx)
+    ? filePathMdx
+    : fs.existsSync(filePathMd)
+    ? filePathMd
+    : null;
   if (!filePath) return null;
   const file = fs.readFileSync(filePath, "utf8");
   const { content, data } = matter(file);
   const fm = data as Partial<PostFrontmatter>;
   if (!fm.title || !fm.date) {
-    throw new Error(`Post ${slug} missing required frontmatter: title and date`);
+    throw new Error(`Post ${fileSlug} missing required frontmatter: title and date`);
   }
+  const urlSlug = fm.slug
+    ? toKebabCase(fm.slug)
+    : fm.title
+    ? toKebabCase(fm.title)
+    : toKebabCase(fileSlug);
   return {
-    slug,
+    slug: urlSlug,
+    fileSlug,
     content,
     title: fm.title,
     description: fm.description,
@@ -45,9 +66,24 @@ export function getPostBySlug(slug: string): Post | null {
   };
 }
 
+export function getAllPostSlugs(): string[] {
+  return listPostBaseFilenames()
+    .map((fileSlug) => readPostFromBaseFilename(fileSlug))
+    .filter((p): p is Post => Boolean(p))
+    .map((p) => p.slug);
+}
+
+export function getPostByRouteSlug(routeSlug: string): Post | null {
+  // Find a post whose URL slug matches the provided route slug
+  const posts = listPostBaseFilenames()
+    .map((fileSlug) => readPostFromBaseFilename(fileSlug))
+    .filter((p): p is Post => Boolean(p));
+  return posts.find((p) => p.slug === routeSlug) ?? null;
+}
+
 export function getAllPosts(): Post[] {
-  return getAllPostSlugs()
-    .map((slug) => getPostBySlug(slug))
+  return listPostBaseFilenames()
+    .map((fileSlug) => readPostFromBaseFilename(fileSlug))
     .filter((p): p is Post => Boolean(p))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }

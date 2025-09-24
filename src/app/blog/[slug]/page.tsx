@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getAllPostSlugs, getPostBySlug } from "@/lib/posts";
+import { getAllPostSlugs, getPostByRouteSlug } from "@/lib/posts";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -16,7 +16,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPostByRouteSlug(slug);
   if (!post) return {};
   return {
     title: post.title,
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Params) {
 
 export default async function PostPage({ params }: Params) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPostByRouteSlug(slug);
   if (!post) return notFound();
   const url = `https://example.com/blog/${post.slug}`;
   return (
