@@ -16,6 +16,17 @@ So you’re not inflating supply, you’re just relocating coins through a crypt
 
 ![lol](/eip7503.png)
 
+The EIP-7503 also adds a new transaction type :
+
+```jsx title="/src/components/HelloCodeTitle.js"
+
+WormholeTxType { proof, nullifier, recipient }
+
+```
+
+Its payload contains a special field, proof, which is the zero-knowledge proof that you really burned ETH at an [unspendable address](#unspendable-address). If the proof verifies, 
+the transaction mints the same amount of ETH to the destination you specify (recipient).
+
 <a id="unspendable-address"></a>
 ## What is an 'unspendable address'?
 It's simply a public address without a private key.
