@@ -23,6 +23,20 @@ const styles = {
   }
 };
 
+interface DecryptedTextProps {
+  text: string;
+  speed?: number;
+  maxIterations?: number;
+  sequential?: boolean;
+  revealDirection?: 'start' | 'end' | 'center';
+  useOriginalCharsOnly?: boolean;
+  characters?: string;
+  className?: string;
+  parentClassName?: string;
+  encryptedClassName?: string;
+  animateOn?: 'hover' | 'view' | 'both';
+}
+
 export default function DecryptedText({
   text,
   speed = defaultSpeed,
@@ -35,21 +49,7 @@ export default function DecryptedText({
   parentClassName = '',
   encryptedClassName = '',
   animateOn = 'hover',
-  ...props
-}: {
-  text: string;
-  speed?: number;
-  maxIterations?: number;
-  sequential?: boolean;
-  revealDirection?: 'start' | 'end' | 'center';
-  useOriginalCharsOnly?: boolean;
-  characters?: string;
-  className?: string;
-  parentClassName?: string;
-  encryptedClassName?: string;
-  animateOn?: 'hover' | 'view' | 'both';
-  [key: string]: any;
-}) {
+}: DecryptedTextProps) {
   const [displayText, setDisplayText] = useState(text);
   const [isHovering, setIsHovering] = useState(false);
   const [isScrambling, setIsScrambling] = useState(false);
@@ -206,7 +206,7 @@ export default function DecryptedText({
       : {};
 
   return (
-    <motion.span className={parentClassName} ref={containerRef} style={styles.wrapper} {...hoverProps} {...props}>
+    <motion.span className={parentClassName} ref={containerRef} style={styles.wrapper} {...hoverProps}>
       <span style={styles.srOnly}>{displayText}</span>
 
       <span aria-hidden="true">

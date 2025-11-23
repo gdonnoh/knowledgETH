@@ -49,7 +49,7 @@ export function SoonDrawer() {
             <p className="text-sm opacity-80">Upcoming notes:</p>
             <ul className="mt-2 list-disc pl-5 space-y-1 text-sm">
               <li>Proxy contract</li>
-              <li>ERC-4337 (account abstraction)</li>
+              <li>Data sharding</li>
               <li>ZK proving systems overview</li>
             </ul>
           </div>
