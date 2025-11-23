@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
 import { SoonDrawer } from "@/components/SoonDrawer";
+import DecryptedText from "@/components/DecryptedText";
 
 export const dynamic = "force-static";
 
@@ -8,7 +9,9 @@ export default function BlogIndexPage() {
   const items = getAllPosts();
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-4xl font-bold tracking-tight">KnowledgETH</h1>
+      <h1 className="text-4xl font-bold tracking-tight">
+        <DecryptedText text="KnowledgETH" animateOn="view" />
+      </h1>
       <p className="mt-4 text-lg opacity-80">
       This blog will be my running schizo notebook as I learn about Ethereum, zero-knowledge proofs, and the broader Web3 ecosystem.
       </p>
@@ -32,7 +35,7 @@ export default function BlogIndexPage() {
             >
               <div className="flex items-baseline justify-between gap-4">
                 <h3 className="text-xl font-semibold text-white group-hover:underline">
-                  {post.title}
+                  <DecryptedText text={post.title} animateOn="hover" />
                 </h3>
                 <span className="text-sm opacity-70 whitespace-nowrap">
                   {new Date(post.date).toLocaleDateString()}

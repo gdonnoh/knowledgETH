@@ -7,6 +7,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { Tweet } from "react-tweet";
 import Link from "next/link";
 import { TwitterShare } from "@/components/TwitterShare";
+import DecryptedText from "@/components/DecryptedText";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -50,7 +51,9 @@ export default async function PostPage({ params }: Params) {
     <main className="mx-auto max-w-3xl px-6 py-16">
       <Link href="/blog" className="opacity-70 hover:underline">← Back to blog</Link>
       <article className="prose prose-neutral dark:prose-invert mt-6">
-        <h1>{post.title}</h1>
+        <h1>
+          <DecryptedText text={post.title} animateOn="view" />
+        </h1>
         <p className="!mt-0 text-sm opacity-70">{new Date(post.date).toLocaleDateString()}</p>
         <MDXRemote
           source={post.content}
