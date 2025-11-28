@@ -1,6 +1,6 @@
 ---
 title: Account Abstraction (ERC-4337)
-description: Allows to use everything as a private key
+description: Allows you to use anything as a private key
 date: 2025-09-30
 tags: [ethereum, zk, web3]
 decryptTitle: true
@@ -12,43 +12,43 @@ In this article :<br />
 
 Account abstraction is a new way to manage accounts on Ethereum. <br />
 It allows users to create accounts that :
-- are not necessarly controlled by a private key 
-- can sign transaction with everything they want (E.g google account)
-- make someone else pay !
+- are not necessarily controlled by a private key 
+- can sign transactions with whatever they want (e.g. google account)
+- make someone else pay!
 
 
 
 ## How the setup works <a id="AA"></a>
 
-**Create a smart contract that defines "what" can sign transaction.**<br />
+**Create a smart contract that defines "what" can sign a transaction.**<br />
 
-Unlike a normal Ethereum transaction, the protocol doesn’t force the signature field, in fact is just arbitrary bytes :
+Unlike a normal Ethereum transaction, the protocol doesn’t enforce the signature field; in fact, it is just arbitrary bytes:
 
-**You are not sending a transaction to an Ethereum node but a "UserOp" to an alt mempool :**<br />
+**You are not sending a transaction to an Ethereum node but a "UserOp" to an alt mempool:**<br />
 
-A "UserOperation" is sent to a dedicated off-chain "mempool", where it is bundled into a single standard transaction 
+A "UserOperation" is sent to a dedicated off-chain mempool, where it is bundled into a single standard transaction 
 to be executed by the EntryPoint smart contract.
 The mempool wraps each UserOperation in a call, constructs the bundle, and sends it on-chain via the EntryPoint.sol contract.
 A **UserOperation** is nothing more than an object containing all the data needed to define the "rules" of the account.
 
-**The EntryPoint contract is the execution router for the entire AA system: it deploys the account when needed and it executes every operation always.**
+**The EntryPoint contract is the execution router for the entire AA system: it deploys the account when needed and executes every operation.**
 
 The entire workflow should look like this : 
 
 ![lol](/accountabstraction.png)
 
-There are also two add on feature that the EntryPoint contract let you implement in your new account:
-- **Signature aggregar (optional) :** A signature aggregator is a mechanism for the bundler to submit multiple UserOperations to the EntryPoint in one transaction,
-while paying the cost of signature verification only once instead of once per UserOperation. So if you have this option on, your signature (only if the signature method support aggregation eg BLS) is gonna be included in a batch with other compatible UserOperations present in the mempool at that moment, allowing the bundler to compress all those signatures into a single aggregated signature, making you pay a lot less gas.
+There are also two add-on features that the EntryPoint contract lets you implement in your account:
+- **Signature aggregator (optional) :** A signature aggregator is a mechanism for the bundler to submit multiple UserOperations to the EntryPoint in one transaction,
+while paying the cost of signature verification only once instead of once per UserOperation. So if you have this option on, your signature (only if the signature method supports aggregation, e.g. BLS) will be included in a batch with other compatible UserOperations present in the mempool at that moment, allowing the bundler to compress all those signatures into a single aggregated signature, making you pay a lot less gas.
 
-- **Pay master (optional) :** The paymaster is basically the entity that pays the gas for the UserOperation, replacing the requirement that the account must hold ETH.
+- **Paymaster (optional) :** The paymaster is basically the entity that pays the gas for the UserOperation, replacing the requirement that the account must hold ETH.
 
 ## Externally Owned Account vs Unified Account <a id="VS"></a>
 
 **EOA (classic, pre ERC-4337) : <br />**
 - Only an elliptic curve private key (secp256k1) can sign a transaction; Ethereum clients reject anything else.
 - Private keys are difficult to store and secure, even for experienced users.
-- There is no way to recover a lost private key. Lose it and your funds are gone.
+- There is no way to recover a lost private key. Lose it, and your funds are gone.
 
 **ERC-4337 (account abstraction layer on top of Ethereum):**
 - The "signature" field is just arbitrary bytes, the account contract decides how the signature should look like.
@@ -59,13 +59,13 @@ while paying the cost of signature verification only once instead of once per Us
 ## Native Account Abstraction <a id="NAA"></a>
 
 
-Some chain have Account Abstraction natively, like **ZKsync** :<br />
+Some chains have Account Abstraction natively, like **ZKsync** :<br />
 
-- **In ZKsync**, there is one unified mempool and transaction flow: all EOA are smart contracts.
-If compared to Ethereum, the operator here plays the role of a validator and bundler :
+- **In ZKsync**, there is one unified mempool and transaction flow: all EOAs are smart contracts.
+Compared to Ethereum, the operator here plays the role of both validator and bundler:
 
 ![lol](/zksyncaa.png)
 
-- just for context, **Ethereum** has two different mempool for transactions, one for the EOA and one for the UserOps:<br />
+- Just for context, **Ethereum** has two different mempools for transactions, one for the EOA and one for the UserOps:<br />
 
 ![lol](/ethEOA.png)
