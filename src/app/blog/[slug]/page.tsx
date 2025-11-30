@@ -8,6 +8,7 @@ import { Tweet } from "react-tweet";
 import Link from "next/link";
 import { TwitterShare } from "@/components/TwitterShare";
 import DecryptedText from "@/components/DecryptedText";
+import { DonationLink } from "@/components/DonationLink";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -71,6 +72,9 @@ export default async function PostPage({ params }: Params) {
           If you have suggestions or you just want me to make some notes about something, ping me on X :)
         </p>
         <TwitterShare url={url} title={post.title} />
+      </div>
+      <div className="mt-12 text-right">
+        <DonationLink />
       </div>
     </main>
   );
