@@ -72,9 +72,9 @@ export default async function PostPage({ params }: Params) {
           If you have suggestions or you just want me to make some notes about something, ping me on X :)
         </p>
         <TwitterShare url={url} title={post.title} />
-      </div>
-      <div className="mt-12 text-right">
-        <DonationLink />
+        <div className="mt-3">
+          <DonationLink />
+        </div>
       </div>
     </main>
   );
