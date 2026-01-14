@@ -9,6 +9,7 @@ import Link from "next/link";
 import { TwitterShare } from "@/components/TwitterShare";
 import DecryptedText from "@/components/DecryptedText";
 import { DonationLink } from "@/components/DonationLink";
+import { DocswellEmbed } from "@/components/DocswellEmbed";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -58,7 +59,7 @@ export default async function PostPage({ params }: Params) {
         <p className="!mt-0 text-sm opacity-70">{new Date(post.date).toLocaleDateString()}</p>
         <MDXRemote
           source={post.content}
-          components={{ Tweet }}
+          components={{ Tweet, DocswellEmbed }}
           options={{
             mdxOptions: {
               remarkPlugins: [remarkGfm],

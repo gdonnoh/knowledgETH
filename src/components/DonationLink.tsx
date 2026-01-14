@@ -19,7 +19,7 @@ export function DonationLink() {
       onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-[11px] opacity-25 hover:opacity-50 transition-opacity duration-200 font-mono tracking-tight"
+      className="text-[11px] opacity-70 hover:opacity-100 transition-opacity duration-200 font-mono tracking-tight"
       title="Copy ETH address"
     >
       donations
