@@ -19,7 +19,8 @@ export function DocswellEmbed({
   const embedScriptRef = useRef<HTMLScriptElement | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     // Carica lo script principale di Docswell solo una volta
     const loadMainScript = () => {
@@ -46,7 +47,7 @@ export function DocswellEmbed({
       embedScript.setAttribute('data-aspect', aspect);
       embedScript.async = true;
       
-      containerRef.current?.appendChild(embedScript);
+      container.appendChild(embedScript);
       embedScriptRef.current = embedScript;
     };
 
@@ -57,8 +58,9 @@ export function DocswellEmbed({
 
     return () => {
       // Cleanup
-      if (embedScriptRef.current && containerRef.current?.contains(embedScriptRef.current)) {
-        containerRef.current.removeChild(embedScriptRef.current);
+      const currentEmbedScript = embedScriptRef.current;
+      if (currentEmbedScript && container.contains(currentEmbedScript)) {
+        container.removeChild(currentEmbedScript);
       }
     };
   }, [src, aspect]);
