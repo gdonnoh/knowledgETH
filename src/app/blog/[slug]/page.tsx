@@ -11,6 +11,8 @@ import DecryptedText from "@/components/DecryptedText";
 import { DonationLink } from "@/components/DonationLink";
 import { DocswellEmbed } from "@/components/DocswellEmbed";
 
+
+
 type Params = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
