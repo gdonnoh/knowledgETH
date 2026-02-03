@@ -30,6 +30,8 @@ Before, <u>the block proposer was only known at the start of the slot (12s)</u>.
 This model caused increased confirmation latency and often failed to fully utilize block capacity.  
 **EIP-7917 brings near-instant confirmation** by allowing the chain to know, before block production starts, who the proposer will be and which transactions are going to be included, <u>with the block being almost ready at the start of the slot</u>.
 
+Importantly, **EIP-7917** <u>does not introduce preconfirmations at the L1 level</u>, but provides the necessary infrastructure for protocols that rely on them, such as rollups.
+
 Here you can find a very good deeper explanation:
 
 <DocswellEmbed 
