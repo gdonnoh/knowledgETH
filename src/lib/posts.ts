@@ -10,6 +10,46 @@ export type PostFrontmatter = {
   slug?: string; // optional custom URL slug
 };
 
+const MONTH_NAMES_EN = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
+
+/**
+ * Renders a post date for UI. Pure string logic for YYYY-MM-DD so server and client
+ * always match (avoids hydration mismatches from `toLocaleDateString()` defaults).
+ */
+export function formatPostDate(isoDate: string): string {
+  const trimmed = isoDate.trim();
+  const ymd = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmed);
+  if (ymd) {
+    const year = ymd[1];
+    const month = Number(ymd[2]);
+    const day = Number(ymd[3]);
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      return `${MONTH_NAMES_EN[month - 1]} ${day}, ${year}`;
+    }
+  }
+  const t = new Date(trimmed);
+  if (Number.isNaN(t.getTime())) return isoDate;
+  return t.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
 export type Post = PostFrontmatter & {
   // slug used in URL routing (derived from frontmatter slug or kebab-case title/filename)
   slug: string;
@@ -21,6 +61,18 @@ export type Post = PostFrontmatter & {
 };
 
 const postsDirectory = path.join(process.cwd(), "src", "content", "posts");
+
+/** gray-matter may parse `date: 2025-09-23` as a `Date`; normalize to `YYYY-MM-DD`. */
+function normalizeFrontmatterDate(raw: unknown): string {
+  if (raw instanceof Date && !Number.isNaN(raw.getTime())) {
+    const y = raw.getUTCFullYear();
+    const m = String(raw.getUTCMonth() + 1).padStart(2, "0");
+    const d = String(raw.getUTCDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+  if (typeof raw === "string") return raw.trim();
+  return String(raw);
+}
 
 function toKebabCase(input: string): string {
   return input
@@ -75,7 +127,7 @@ function readPostFromBaseFilename(fileSlug: string): Post | null {
     content,
     title: fm.title,
     description: fm.description,
-    date: fm.date,
+    date: normalizeFrontmatterDate(fm.date),
     tags: fm.tags ?? [],
     firstImageUrl,
   };

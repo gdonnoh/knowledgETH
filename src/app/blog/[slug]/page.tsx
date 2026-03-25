@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getAllPostSlugs, getPostByRouteSlug } from "@/lib/posts";
+import { formatPostDate, getAllPostSlugs, getPostByRouteSlug } from "@/lib/posts";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -10,6 +10,7 @@ import { TwitterShare } from "@/components/TwitterShare";
 import DecryptedText from "@/components/DecryptedText";
 import { DonationLink } from "@/components/DonationLink";
 import { DocswellEmbed } from "@/components/DocswellEmbed";
+import { PolymarketEmbed } from "@/components/PolymarketEmbed";
 
 
 
@@ -58,10 +59,10 @@ export default async function PostPage({ params }: Params) {
         <h1>
           <DecryptedText text={post.title} animateOn="view" />
         </h1>
-        <p className="!mt-0 text-sm opacity-70">{new Date(post.date).toLocaleDateString()}</p>
+        <p className="!mt-0 text-sm opacity-70">{formatPostDate(post.date)}</p>
         <MDXRemote
           source={post.content}
-          components={{ Tweet, DocswellEmbed }}
+          components={{ Tweet, DocswellEmbed, PolymarketEmbed }}
           options={{
             mdxOptions: {
               remarkPlugins: [remarkGfm],

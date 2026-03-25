@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllPosts } from "@/lib/posts";
+import { formatPostDate, getAllPosts } from "@/lib/posts";
 import { SoonDrawer } from "@/components/SoonDrawer";
 import DecryptedText from "@/components/DecryptedText";
 
@@ -38,7 +38,7 @@ export default function BlogIndexPage() {
                   <DecryptedText text={post.title} animateOn="hover" />
                 </h3>
                 <span className="text-sm opacity-70 whitespace-nowrap">
-                  {new Date(post.date).toLocaleDateString()}
+                  {formatPostDate(post.date)}
                 </span>
               </div>
               {post.description && (
