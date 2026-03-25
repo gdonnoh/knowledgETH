@@ -3,7 +3,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const MAX_W = 600;
+/** Polymarket’s default embed is 600×300; narrow widths must not use proportional height or the chart collapses (~160px). */
 const ASPECT = 300 / 600;
+const MIN_H_NARROW = 360;
+const NARROW_MAX_W = 520;
 
 type Props = {
   market: string;
@@ -41,7 +44,11 @@ export function PolymarketEmbed({
         MAX_W,
         Math.max(260, Math.floor(wRaw > 0 ? wRaw : MAX_W))
       );
-      const h = Math.round(w * ASPECT);
+      const proportional = Math.round(w * ASPECT);
+      const h =
+        w <= NARROW_MAX_W
+          ? Math.max(proportional, MIN_H_NARROW)
+          : proportional;
       setDims((prev) =>
         prev && prev.w === w && prev.h === h ? prev : { w, h }
       );
@@ -73,9 +80,12 @@ export function PolymarketEmbed({
               src={src}
               width={dims.w}
               height={dims.h}
-              className="block border-0"
+              className="block max-w-full border-0"
               style={{ width: dims.w, height: dims.h, maxWidth: "100%" }}
               frameBorder={0}
+              loading="eager"
+              allow="clipboard-write; fullscreen"
+              referrerPolicy="strict-origin-when-cross-origin"
             />
             <a
               href={eventUrl}
@@ -93,7 +103,7 @@ export function PolymarketEmbed({
           </>
         ) : (
           <div
-            className="aspect-[2/1] w-full rounded-md border border-white/10 bg-white/[0.04]"
+            className="h-[360px] w-full rounded-md border border-white/10 bg-white/[0.04]"
             aria-hidden
           />
         )}
